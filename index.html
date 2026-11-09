@@ -56,6 +56,7 @@ function render(){
  el('next').disabled=key(day)>=key(new Date());
  const list=entries(),total=Math.round(list.reduce((sum,v)=>sum+Number(v.mg||0),0)*10)/10,remaining=Math.round((limit-total)*10)/10;
  el('total').textContent=total.toLocaleString(locale);
+ document.querySelector('.track').setAttribute('aria-valuemax',String(limit));document.querySelector('.track').setAttribute('aria-valuenow',String(total));
  el('fill').style.width=Math.max(0,Math.min(100,total/limit*100))+'%';el('fill').classList.toggle('over',total>limit);
  el('status').textContent=total>LIMIT?t('over',-remaining):t('remaining',remaining);
  el('tip').textContent=remaining<=0?tr.tipLow:remaining<50?tr.tipMid:tr.tipHigh;
