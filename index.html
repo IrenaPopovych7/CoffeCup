@@ -58,7 +58,7 @@ function render(){
  el('total').textContent=total.toLocaleString(locale);
  document.querySelector('.track').setAttribute('aria-valuemax',String(limit));document.querySelector('.track').setAttribute('aria-valuenow',String(total));
  el('fill').style.width=Math.max(0,Math.min(100,total/limit*100))+'%';el('fill').classList.toggle('over',total>limit);
- el('status').textContent=total>LIMIT?t('over',-remaining):t('remaining',remaining);
+ el('status').textContent=total>limit?t('over',-remaining):t('remaining',remaining);
  el('tip').textContent=remaining<=0?tr.tipLow:remaining<50?tr.tipMid:tr.tipHigh;
  const buttons=el('drinks');buttons.replaceChildren();
  drinks.forEach((d,i)=>{const b=document.createElement('button');b.className='drink';b.type='button';
