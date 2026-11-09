@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#eef2e7"><meta name="description" content="Моя чашка — щоденник кофеїну"><title>Моя чашка ☕</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#eef2e7"><meta name="description" content="Моя чашка — щоденник кофеїну"><title>My Cup ☕</title>
 <style>
 :root{font-family:system-ui,-apple-system,sans-serif;background:#f7f6ee;color:#243d2c}*{box-sizing:border-box}body{margin:0}main{max-width:640px;margin:auto;padding:24px 16px 90px}h1{font-size:clamp(2.3rem,9vw,3.4rem);margin:0;letter-spacing:-.06em}h2{font-size:1.15rem;margin:0 0 14px}p{line-height:1.5}.sub{color:#708173;margin:8px 0 26px}.card{background:#fff;border-radius:22px;padding:20px;margin-bottom:14px;box-shadow:0 5px 20px #23452b08}.hero{background:#e3eddd}.date{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px}.date button,.mutedbtn{background:#f3f6ef;border:1px solid #d4e0d1;color:#375841;padding:9px 13px;border-radius:12px}.total{font-size:3.8rem;font-weight:800;letter-spacing:-.07em}.limit{color:#617965}.track{height:13px;border-radius:20px;background:#cadbc4;overflow:hidden;margin:12px 0}.fill{height:100%;background:#4f7a5b;transition:width .2s}.over{background:#c36c52}#status{color:#52715a;font-size:.92rem}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.drink{border:1px solid #e3e9dc;border-radius:16px;background:#fafbf7;padding:16px 12px;text-align:left;color:inherit;min-height:112px;cursor:pointer}.drink:active{transform:scale(.98)}.emoji{display:block;font-size:1.6rem;margin-bottom:6px}.drink strong{display:block;font-size:.86rem}.drink small{color:#688071;font-size:.77rem;display:block;margin-top:6px}input,button{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #90bc95;outline-offset:2px}.custom{display:flex;gap:8px;flex-wrap:wrap}.custom input{min-width:0;flex:1;border:1px solid #d4ddce;border-radius:11px;padding:12px}.custom input[type=number]{flex:0 0 90px}.primary{border:none;background:#365d41;color:white;padding:12px 16px;border-radius:12px;font-weight:700}.item{display:flex;gap:9px;align-items:center;padding:11px;background:#f8faf5;border-radius:12px;margin-top:8px}.item span:nth-child(2){flex:1}.item small{display:block;color:#738276}.del{background:#f7eae5;color:#985849;border:0;border-radius:8px;padding:7px 12px}.head{display:flex;justify-content:space-between;align-items:center}.tip{background:#fff9ee}.tip p{font-size:.93rem}.fine{font-size:.78rem;color:#7e8b80}.foot{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:13px;background:#f7f6eef0;border-top:1px solid #e2e8db;color:#59715f;font-size:.8rem}@media(min-width:520px){.grid{grid-template-columns:repeat(3,1fr)}}
 </style></head><body><main>
-<p style="font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;color:#69836e;font-weight:700">Маленька турбота про себе 🌿</p><h1>Моя чашка ☕</h1><p class="sub">Твій щоденник кофеїну — просто, спокійно, щодня.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><p id="eyebrow" style="font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:#69836e;font-weight:700">A little self-care 🌿</p><div role="group" aria-label="Language" style="display:flex;gap:5px"><button class="mutedbtn" id="en" type="button" aria-pressed="true">EN</button><button class="mutedbtn" id="uk" type="button" aria-pressed="false">УКР</button></div></div><h1>Моя чашка ☕</h1><p class="sub">Твій щоденник кофеїну — просто, спокійно, щодня.</p>
 <section class="card hero"><div class="date"><button id="prev" aria-label="Попередній день">←</button><strong id="date"></strong><button id="next" aria-label="Наступний день">→</button></div><div style="font-size:.85rem;color:#5d765f;font-weight:700">СПОЖИТО ЗА ДЕНЬ</div><div><span class="total" id="total">0</span> <span class="limit">/ 200 мг</span></div><div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="200" aria-label="Спожито кофеїну"><div id="fill" class="fill"></div></div><p id="status" aria-live="polite"></p></section>
 <section class="card"><h2>Що ти випила?</h2><div id="drinks" class="grid"></div><p class="fine">Значення приблизні: вміст кофеїну залежить від порції, зерен і приготування.</p></section>
 <section class="card"><h2>Свій напій</h2><form id="custom" class="custom"><input id="name" aria-label="Назва напою" placeholder="Назва" maxlength="50" required><input id="mg" aria-label="Кофеїн, мг" type="number" min="0" max="1000" step="0.1" placeholder="мг" required><button class="primary">Додати</button></form></section>
@@ -13,32 +13,73 @@
 <script>
 (function(){
 'use strict';
-var LIMIT=200,STORE='my-cup-v1';
-var drinks=[['☕','Еспресо · 30 мл',63],['☕','Подвійний еспресо',126],['🥛','Капучино · 1 шот',63],['🥛','Лате · 1 шот',63],['🫖','Фільтр · 240 мл',96],['☕','Розчинна · 240 мл',62],['🍵','Чорний чай · 240 мл',48],['🍃','Зелений чай · 240 мл',29],['🍵','Матча · 2 г',65],['☕','Decaf · 240 мл',5],['🥤','Кола · 330 мл',33],['💧','Вода / ройбуш',0]];
-var el=function(id){return document.getElementById(id)};
-var day=new Date();day.setHours(12,0,0,0);
-var store={};try{store=JSON.parse(localStorage.getItem(STORE)||'{}')||{}}catch(e){}
-function key(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-function entries(){return Array.isArray(store[key(day)])?store[key(day)]:[]}
-function save(){try{localStorage.setItem(STORE,JSON.stringify(store))}catch(e){alert('Не вдалося зберегти записи')}}
-function add(name,mg,icon){var k=key(day);store[k]=entries().concat([{id:String(Date.now())+String(Math.random()),name:name,mg:mg,icon:icon,time:new Date().toLocaleTimeString('uk-UA',{hour:'2-digit',minute:'2-digit'})}]);save();render()}
-var target=el('drinks');drinks.forEach(function(d){var b=document.createElement('button');b.className='drink';b.type='button';var i=document.createElement('span');i.className='emoji';i.textContent=d[0];var n=document.createElement('strong');n.textContent=d[1];var m=document.createElement('small');m.textContent='≈ '+d[2]+' мг · + додати';b.append(i,n,m);b.addEventListener('click',function(){add(d[1],d[2],d[0])});target.append(b)});
+const LIMIT=200,STORE='my-cup-v1',LANG='my-cup-language';
+const translations={
+en:{title:'My Cup ☕',eyebrow:'A little self-care 🌿',subtitle:'Your caffeine diary — simple, mindful, every day.',consumed:'CONSUMED TODAY',mg:'mg',remaining:'About {n} mg left until your daily guide.',over:'Above the daily guide by {n} mg. No need to panic; choose caffeine-free drinks.',what:'What did you drink?',approx:'Values are estimates. Caffeine varies by serving size, beans and preparation.',custom:'Custom drink',drinkName:'Drink name',add:'Add',entries:'Daily entries',clear:'Clear',tipsTitle:'What else can you drink? 💚',options:'💧 Water · 🌺 Rooibos · 🥛 Milk · ☕ Decaf',herbal:'Check herbal teas and supplements with your IVF clinic.',disclaimer:'200 mg/day is a general guide, not individual medical advice. Follow your clinic’s recommendations. Your entries are stored only in this browser.',footer:'Self-care, one cup at a time ✨',noEntries:'No entries yet. Add your first cup ☕',remove:'Remove {name}',clearConfirm:'Delete all entries for this day?',saveFailed:'Could not save your entries.',tipLow:'Choose water, rooibos or caffeine-free drinks. Decaf still contains a little caffeine.',tipMid:'A light tea or decaf may fit, depending on the serving.',tipHigh:'Coffee or tea can fit if the estimated caffeine stays within your daily guide.',addDrink:'+ add',previous:'Previous day',next:'Next day',
+drinks:['Espresso · 30 ml','Double espresso','Cappuccino · 1 shot','Latte · 1 shot','Filter coffee · 240 ml','Instant coffee · 240 ml','Black tea · 240 ml','Green tea · 240 ml','Matcha · 2 g','Decaf · 240 ml','Cola · 330 ml','Water / rooibos']},
+uk:{title:'Моя чашка ☕',eyebrow:'Маленька турбота про себе 🌿',subtitle:'Твій щоденник кофеїну — просто, спокійно, щодня.',consumed:'СПОЖИТО ЗА ДЕНЬ',mg:'мг',remaining:'Ще приблизно {n} мг до денного орієнтира.',over:'Перевищено орієнтир на {n} мг. Не панікуй; обирай напої без кофеїну.',what:'Що ти випила?',approx:'Значення приблизні: вміст кофеїну залежить від порції, зерен і приготування.',custom:'Свій напій',drinkName:'Назва напою',add:'Додати',entries:'Записи за день',clear:'Очистити',tipsTitle:'Що ще можна випити? 💚',options:'💧 Вода · 🌺 Ройбуш · 🥛 Молоко · ☕ Decaf',herbal:'Трав’яні чаї й добавки під час ЕКЗ варто узгодити з клінікою.',disclaimer:'200 мг/день — орієнтир, а не персональне медичне призначення. Дотримуйся рекомендацій своєї клініки. Записи залишаються тільки у браузері цього пристрою.',footer:'Турбота про себе, одна чашка за раз ✨',noEntries:'Поки немає записів. Додай першу чашку ☕',remove:'Видалити {name}',clearConfirm:'Видалити всі записи за обраний день?',saveFailed:'Не вдалося зберегти записи.',tipLow:'Краще вода, ройбуш або напої без кофеїну. Decaf містить трохи кофеїну.',tipMid:'Можна легкий чай або напої без кофеїну, враховуючи порцію.',tipHigh:'Можна каву чи чай, якщо їхній вміст кофеїну вкладається в денний залишок.',addDrink:'+ додати',previous:'Попередній день',next:'Наступний день',
+drinks:['Еспресо · 30 мл','Подвійний еспресо','Капучино · 1 шот','Лате · 1 шот','Фільтр · 240 мл','Розчинна · 240 мл','Чорний чай · 240 мл','Зелений чай · 240 мл','Матча · 2 г','Decaf · 240 мл','Кола · 330 мл','Вода / ройбуш']}
+};
+const namesUA=translations.uk.drinks,namesEN=translations.en.drinks;
+let language='en';try{language=localStorage.getItem(LANG)==='uk'?'uk':'en'}catch(e){}
+let day=new Date();day.setHours(12,0,0,0);
+let store={};try{store=JSON.parse(localStorage.getItem(STORE)||'{}')||{}}catch(e){}
+const el=id=>document.getElementById(id);
+const drinks=[['☕',63],['☕',126],['🥛',63],['🥛',63],['🫖',96],['☕',62],['🍵',48],['🍃',29],['🍵',65],['☕',5],['🥤',33],['💧',0]];
+const t=(key,n)=>String(translations[language][key]).replace('{n}',n);
+const key=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const entries=()=>Array.isArray(store[key(day)])?store[key(day)]:[];
+function save(){try{localStorage.setItem(STORE,JSON.stringify(store))}catch(e){alert(t('saveFailed'))}}
+function add(name,mg,icon,drinkIndex){const k=key(day);store[k]=entries().concat([{id:String(Date.now())+String(Math.random()),name,mg,icon,drinkIndex,time:new Date().toLocaleTimeString(language==='uk'?'uk-UA':'en-GB',{hour:'2-digit',minute:'2-digit'})}]);save();render()}
+function translateName(entry){if(Number.isInteger(entry.drinkIndex)&&drinks[entry.drinkIndex])return translations[language].drinks[entry.drinkIndex];const idx=namesUA.indexOf(entry.name);if(idx!==-1)return translations[language].drinks[idx];const idx2=namesEN.indexOf(entry.name);return idx2!==-1?translations[language].drinks[idx2]:entry.name}
+function setLanguage(lang){language=lang;try{localStorage.setItem(LANG,language)}catch(e){}render()}
 function render(){
-var arr=entries(),total=Math.round(arr.reduce(function(a,b){return a+Number(b.mg||0)},0)*10)/10,remaining=Math.round((LIMIT-total)*10)/10;
-el('date').textContent=day.toLocaleDateString('uk-UA',{weekday:'short',day:'numeric',month:'long'});
-el('next').disabled=key(day)>=key(new Date());el('total').textContent=total.toLocaleString('uk-UA');
-el('fill').style.width=Math.max(0,Math.min(100,total/LIMIT*100))+'%';el('fill').classList.toggle('over',total>LIMIT);
-el('status').textContent=total>LIMIT?'Перевищено орієнтир на '+(-remaining)+' мг. Не панікуй; обирай напої без кофеїну.':'Ще приблизно '+remaining+' мг до денного орієнтира.';
-el('tip').textContent=remaining<=0?'Краще вода, ройбуш або напої без кофеїну. Decaf містить трохи кофеїну.':remaining<50?'Можна легкий чай або напої без кофеїну, враховуючи порцію.':'Можна каву чи чай, якщо їхній вміст кофеїну вкладається в денний залишок.';
-var log=el('log');log.replaceChildren();
-if(!arr.length){var empty=document.createElement('p');empty.className='fine';empty.textContent='Поки немає записів. Додай першу чашку ☕';log.append(empty)}
-arr.forEach(function(x){var row=document.createElement('div');row.className='item';var emoji=document.createElement('span');emoji.textContent=x.icon||'☕';var info=document.createElement('span');var strong=document.createElement('strong');strong.textContent=x.name;var small=document.createElement('small');small.textContent=x.mg+' мг · '+x.time;info.append(strong,small);var remove=document.createElement('button');remove.className='del';remove.textContent='×';remove.setAttribute('aria-label','Видалити '+x.name);remove.addEventListener('click',function(){store[key(day)]=entries().filter(function(v){return v.id!==x.id});save();render()});row.append(emoji,info,remove);log.append(row)});
-el('clear').disabled=!arr.length
+ const tr=translations[language];document.documentElement.lang=language;document.title=tr.title;
+ el('eyebrow').textContent=tr.eyebrow;el('en').setAttribute('aria-pressed',String(language==='en'));el('uk').setAttribute('aria-pressed',String(language==='uk'));
+ el('en').style.background=language==='en'?'#d7e9d9':'#f3f6ef';el('uk').style.background=language==='uk'?'#d7e9d9':'#f3f6ef';
+ document.querySelector('h1').textContent=tr.title;document.querySelector('.sub').textContent=tr.subtitle;
+ document.querySelector('.hero [style*="font-size:.85rem"]').textContent=tr.consumed;
+ document.querySelector('.limit').textContent='/ 200 '+tr.mg;
+ const headings=document.querySelectorAll('h2');[tr.what,tr.custom,tr.entries,tr.tipsTitle].forEach((x,i)=>headings[i].textContent=x);
+ document.querySelector('#drinks + .fine').textContent=tr.approx;
+ el('name').placeholder=tr.drinkName;el('name').setAttribute('aria-label',tr.drinkName);
+ el('mg').placeholder=tr.mg;el('mg').setAttribute('aria-label',tr.mg);
+ el('custom').querySelector('button').textContent=tr.add;el('clear').textContent=tr.clear;
+ document.querySelector('.tip p:not(.fine)').textContent=tr.options;
+ document.querySelector('.tip .fine').textContent=tr.herbal;
+ document.querySelector('main > p.fine').textContent=tr.disclaimer;
+ document.querySelector('.foot').textContent=tr.footer;
+ el('prev').setAttribute('aria-label',tr.previous);el('next').setAttribute('aria-label',tr.next);
+ const locale=language==='uk'?'uk-UA':'en-GB';el('date').textContent=day.toLocaleDateString(locale,{weekday:'short',day:'numeric',month:'long'});
+ el('next').disabled=key(day)>=key(new Date());
+ const list=entries(),total=Math.round(list.reduce((sum,v)=>sum+Number(v.mg||0),0)*10)/10,remaining=Math.round((LIMIT-total)*10)/10;
+ el('total').textContent=total.toLocaleString(locale);
+ el('fill').style.width=Math.max(0,Math.min(100,total/LIMIT*100))+'%';el('fill').classList.toggle('over',total>LIMIT);
+ el('status').textContent=total>LIMIT?t('over',-remaining):t('remaining',remaining);
+ el('tip').textContent=remaining<=0?tr.tipLow:remaining<50?tr.tipMid:tr.tipHigh;
+ const buttons=el('drinks');buttons.replaceChildren();
+ drinks.forEach((d,i)=>{const b=document.createElement('button');b.className='drink';b.type='button';
+ const icon=document.createElement('span');icon.className='emoji';icon.textContent=d[0];
+ const name=document.createElement('strong');name.textContent=tr.drinks[i];
+ const amount=document.createElement('small');amount.textContent='≈ '+d[1]+' '+tr.mg+' · '+tr.addDrink;
+ b.append(icon,name,amount);b.addEventListener('click',()=>add(namesEN[i],d[1],d[0],i));buttons.append(b)});
+ const log=el('log');log.replaceChildren();
+ if(!list.length){const empty=document.createElement('p');empty.className='fine';empty.textContent=tr.noEntries;log.append(empty)}
+ list.forEach(x=>{const row=document.createElement('div');row.className='item';
+ const icon=document.createElement('span');icon.textContent=x.icon||'☕';
+ const info=document.createElement('span'),strong=document.createElement('strong');strong.textContent=translateName(x);
+ const small=document.createElement('small');small.textContent=x.mg+' '+tr.mg+' · '+x.time;info.append(strong,small);
+ const remove=document.createElement('button');remove.className='del';remove.textContent='×';remove.setAttribute('aria-label',t('remove',translateName(x)).replace('{name}',translateName(x)));
+ remove.addEventListener('click',()=>{store[key(day)]=entries().filter(v=>v.id!==x.id);save();render()});
+ row.append(icon,info,remove);log.append(row)});
+ el('clear').disabled=!list.length
 }
-el('prev').addEventListener('click',function(){day.setDate(day.getDate()-1);render()});
-el('next').addEventListener('click',function(){if(key(day)<key(new Date())){day.setDate(day.getDate()+1);render()}});
-el('clear').addEventListener('click',function(){if(entries().length&&confirm('Видалити всі записи за обраний день?')){delete store[key(day)];save();render()}});
-el('custom').addEventListener('submit',function(e){e.preventDefault();var name=el('name').value.trim(),mg=Number(el('mg').value);if(name&&Number.isFinite(mg)&&mg>=0&&mg<=1000){add(name,mg,'🥤');el('custom').reset()}});
+el('en').addEventListener('click',()=>setLanguage('en'));
+el('uk').addEventListener('click',()=>setLanguage('uk'));
+el('prev').addEventListener('click',()=>{day.setDate(day.getDate()-1);render()});
+el('next').addEventListener('click',()=>{if(key(day)<key(new Date())){day.setDate(day.getDate()+1);render()}});
+el('clear').addEventListener('click',()=>{if(entries().length&&confirm(t('clearConfirm'))){delete store[key(day)];save();render()}});
+el('custom').addEventListener('submit',e=>{e.preventDefault();const name=el('name').value.trim(),mg=Number(el('mg').value);if(name&&Number.isFinite(mg)&&mg>=0&&mg<=1000){add(name,mg,'🥤');el('custom').reset()}});
 render();
 })();
 </script></body></html>
