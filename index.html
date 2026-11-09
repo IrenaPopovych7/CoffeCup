@@ -45,7 +45,7 @@ function render(){
  el('name').placeholder=tr.drinkName;el('name').setAttribute('aria-label',tr.drinkName);
  el('mg').placeholder=tr.mg;el('mg').setAttribute('aria-label',tr.mg);
  el('custom').querySelector('button').textContent=tr.add;el('clear').textContent=tr.clear;
- document.querySelector('.tip p:not(.fine)').textContent=tr.options;
+ document.querySelector('.tip p:nth-of-type(2)').textContent=tr.options;
  document.querySelector('.tip .fine').textContent=tr.herbal;
  document.querySelector('main > p.fine').textContent=tr.disclaimer;
  document.querySelector('.foot').textContent=tr.footer;
